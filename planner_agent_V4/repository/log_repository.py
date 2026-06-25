@@ -1,6 +1,6 @@
 import json
 
-from db import conn
+from database.db import conn
 
 
 class LogRepository:
@@ -12,6 +12,7 @@ class LogRepository:
             trace,
             answer
     ):
+
 
         conn.execute(
             """

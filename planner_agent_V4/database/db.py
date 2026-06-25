@@ -1,7 +1,10 @@
 import sqlite3
 
+import os
+DB_PATH = os.path.join(os.path.dirname(__file__), "agent.db")
+
 conn = sqlite3.connect(
-    "agent.db",
+    DB_PATH,
     check_same_thread=False
 )
 

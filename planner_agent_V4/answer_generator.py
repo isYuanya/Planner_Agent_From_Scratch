@@ -6,18 +6,18 @@ class AnswerGenerator:
     def build_prompt(
             self,
             question,
-            state
+            trace
     ):
         """
         构建生成答案的提示词，包含用户问题和各步骤执行结果
         """
-        # 格式化state为易读的字符串
+        # 格式化trace为易读的字符串
         state_str = "\n".join([
-            f"步骤 {step_id}：\n"
-            f"  使用工具：{data['tool']}\n"
-            f"  输入内容：{data['input']}\n"
-            f"  执行结果：{data['result']}"
-            for step_id, data in state.items()
+            f"步骤 {step['step_id']}：\n"
+            f"  使用工具：{step['tool']}\n"
+            f"  输入内容：{step['input']}\n"
+            f"  执行结果：{step['output']}"
+            for step in trace
         ])
 
         prompt = f"""
@@ -38,13 +38,13 @@ class AnswerGenerator:
     def generate_answer(
             self,
             question,
-            state
+            trace
     ):
         """
         生成最终答案：构建提示词 → 调用大模型 → 返回答案
         """
         # 1. 构建提示词
-        prompt = self.build_prompt(question, state)
+        prompt = self.build_prompt(question, trace)
 
         # 2. 调用大模型生成答案
         response = self.client.chat.completions.create(

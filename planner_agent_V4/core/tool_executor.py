@@ -1,4 +1,4 @@
-from variable_resolver import VariableResolver
+from .variable_resolver import VariableResolver
 from logger import logger
 
 class ToolExecutor:

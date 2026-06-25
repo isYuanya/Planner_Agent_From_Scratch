@@ -2,9 +2,12 @@ from planner import Planner
 from validator import Validator
 from answer_generator import AnswerGenerator
 from tools.calculator_tool import calculator_tool
-from tool_registry import ToolRegistry
-from tool_executor import ToolExecutor
-from log_repository import LogRepository
+from core.tool_registry import ToolRegistry
+from core.tool_executor import ToolExecutor
+from repository.log_repository import LogRepository
+from tools.rag_tool import rag_tool
+from tools.weather_tool import weather_tool
+from tools.db_tool import db_tool
 
 class Agent:
 
@@ -34,12 +37,6 @@ class Agent:
 
     def _register_tools(self):
 
-        def rag_tool(query):
-            return f"[rag result] {query}"
-
-        def weather_tool(city):
-            return f"{city}天气晴朗 30℃"
-
         self.tool_registry.register(
             "rag",
             rag_tool
@@ -53,6 +50,11 @@ class Agent:
         self.tool_registry.register(
             "weather",
             weather_tool
+        )
+
+        self.tool_registry.register(
+            "db",
+            db_tool
         )
 
     def run(self, question):
@@ -119,7 +121,7 @@ class Agent:
         answer = (
             self.answer_generator.generate_answer(
                 question,
-                state
+                trace
             )
         )
 
