@@ -1,21 +1,16 @@
-from database.db import conn
+import sys
+import os
 
+# 把项目根目录（planner_agent_V4）加入导入搜索路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-def db_tool(query: str):
-    """
-    数据库查询工具：查询执行日志记录
-    """
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT id, question, answer FROM execution_logs ORDER BY id DESC LIMIT 5"
-    )
-    rows = cursor.fetchall()
+from repository.log_repository import LogRepository
 
-    if not rows:
-        return "暂无历史记录"
+repo = LogRepository()
 
-    results = []
-    for row in rows:
-        results.append(f"[{row[0]}] Q: {row[1]} → A: {row[2]}")
-
-    return "\n".join(results)
+def db_tool(sql):
+    try:
+        result = repo.execute_query(sql)
+        return str(result)
+    except Exception as e:
+        return f"SQL执行失败: {e}"

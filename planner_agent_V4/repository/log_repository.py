@@ -37,3 +37,11 @@ class LogRepository:
         )
 
         conn.commit()
+
+    def execute_query(self, sql):
+
+        cursor = conn.execute(sql)
+
+        rows = cursor.fetchall()
+
+        return rows

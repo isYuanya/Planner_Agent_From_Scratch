@@ -1,0 +1,23 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+.pytest_cache/
+tests/
+
+.git/
+.gitignore
+
+.vscode/
+.idea/
+
+.env
+
+logs/
+*.log
+
+# frontend 由独立镜像构建, 不打包进 API 镜像
+frontend/
+
+README.md

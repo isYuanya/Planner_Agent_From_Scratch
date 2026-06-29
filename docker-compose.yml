@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  # ── FastAPI 后端 ──
+  api:
+    build: ./planner_agent_V6
+    container_name: planner-api
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=false
+    volumes:
+      - agent_logs:/app/logs
+      - agent_data:/app/persistence
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+  # ── Streamlit 前端 ──
+  frontend:
+    build: ./planner_agent_V6/frontend
+    container_name: planner-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - BACKEND_URL=http://api:8000
+    depends_on:
+      api:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  agent_logs:
+  agent_data:

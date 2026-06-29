@@ -17,3 +17,12 @@ Thumbs.db
 # Python 虚拟环境
 venv/
 .venv/
+
+# 运行时数据 (含真实 API 调用记录和密钥日志)
+*.db
+logs/
+*.log
+
+# Docker 数据卷
+agent_logs/
+agent_data/

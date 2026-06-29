@@ -99,17 +99,42 @@ class Agent:
             attempt += 1
 
         if not success:
-
             return "规划失败"
 
+        # execution_result —— 工具执行器的完整返回包
+        # execution_result = {
+        #     # 结果字典：用步骤ID当key，快速取出对应工具的纯输出，变量替换时直接查
+        #     "results": {
+        #         "step1": "DPO（Direct Preference Optimization）由Rafael Rafailov等人于2023年提出...",
+        #         "step2": "4047"
+        #     },
+        #     # 完整轨迹：就是上面的 trace 列表，用来生成答案、记录存档
+        #     "trace": [
+        #         {"step_id": "step1", "tool": "rag", "input": "DPO哪年提出", "output": "..."},
+        #         {"step_id": "step2", "tool": "calculator", "input": "2023+2024", "output": "4047"}
+        #     ]
+        # }
         execution_result = (
             self.tool_executor.execute(plan)
         )
 
-        state = execution_result["results"]
-
         trace = execution_result["trace"]
 
+        # agent.py 里的列表变量，内存临时缓存
+        # self.execution_logs = [
+        #     # 第一次请求的执行快照
+        #     {
+        #         "question": "DPO哪年提出？再算一下2023+2024等于几",
+        #         "plan": {"steps": [{"id": "step1", "tool": "rag", "input": "DPO哪年提出"}, ...]},
+        #         "trace": [上面的 trace 完整列表]
+        #     },
+        #     # 第二次请求的执行快照
+        #     {
+        #         "question": "那它的作者是谁？",
+        #         "plan": {"steps": [{"id": "step1", "tool": "rag", "input": "DPO的作者"}]},
+        #         "trace": [...]
+        #     }
+        # ]
         self.execution_logs.append(
             {
                 "question": question,
@@ -125,6 +150,7 @@ class Agent:
             )
         )
 
+        # agent.db 里的 execution_logs 表 —— 硬盘永久存档
         self.log_repository.save(
             question,
             plan,
@@ -132,6 +158,18 @@ class Agent:
             answer
         )
 
+
+        # self.messages —— 大模型的对话记忆（多轮上下文）
+        # self.messages = [
+        #     # 系统提示词：给大模型定行为规则，每次调用都会带上
+        #     {"role": "system", "content": "你是规划式智能助手，先拆解步骤调用工具，再根据结果回答问题。"},
+        #     # 第一轮用户提问
+        #     {"role": "user", "content": "DPO哪年提出？再算一下2023+2024等于几"},
+        #     # 第一轮AI的最终回答
+        #     {"role": "assistant", "content": "DPO于2023年提出，2023+2024的计算结果是4047。"},
+        #     # 第二轮用户追问（多轮对话时会持续追加）
+        #     {"role": "user", "content": "那它的作者是谁？"}
+        # ]
         self.messages.append(
             {
                 "role": "assistant",

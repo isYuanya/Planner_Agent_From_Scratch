@@ -17,22 +17,6 @@ class RAGRetriever:
         index_path = current_dir / "knowledge.index"
         chunk_path = current_dir / "chunks.pkl"
 
-        print("======== RAG DEBUG ========")
-
-        print("file:", __file__)
-
-        print("current_dir:", current_dir)
-
-        print("index_path:", index_path)
-
-        print("chunk_path:", chunk_path)
-
-        print("index exists:", index_path.exists())
-
-        print("chunk exists:", chunk_path.exists())
-
-        print("===========================")
-
         self.model = SentenceTransformer(
             "paraphrase-multilingual-MiniLM-L12-v2"
         )

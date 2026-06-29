@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+streamlit
+requests
+openai
+python-dotenv
+faiss-cpu
+sentence-transformers
+numpy
+pypdf
+tavily-python
+jsonschema
+pytest
+pytest-mock
